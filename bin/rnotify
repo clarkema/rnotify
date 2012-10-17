@@ -1,0 +1,64 @@
+#! /usr/bin/env ruby
+# rnotify - remote OS X notifications over SSH
+# Copyright (C) 2012 by Michael Clarke <clarkema at clarkema dot org>
+# Maintainer: Michael Clarke <clarkema at clarkema dot org>
+#
+# This file is part of rnotify.
+#
+# rnotify is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# rnotify is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with rnotify.  If not, see <http://www.gnu.org/licenses/>.
+
+require 'socket'
+
+$config   = Hash.new
+$dotfile  = "~/.rnotify"
+
+trap("SIGINT") { exit }
+
+def main
+  read_config
+  server = TCPServer.new $config['port']
+
+  loop do
+    Thread.start(server.accept) do |client|
+      (password, message) = client.gets.split("\t")
+
+      if $config['password']
+        next unless password == $config['password']
+      end
+      if message
+        system( $config['notifier'], '-message', message)
+      end
+      client.close
+    end
+  end
+end
+
+def read_config
+  file = File.expand_path( $dotfile )
+
+  if File.exist?( file )
+    File.open( file ).each do |line|
+      (k, v) = line.chomp.split(/:\s+/)
+      $config[k] = v
+    end
+  end
+
+  unless $config['port'] and $config['notifier']
+    warn "Please configure at least your port and notifier utility"
+    warn "in $HOME/.rnotify.  See the README for more."
+    exit 1
+  end
+end
+
+main

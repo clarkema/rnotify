@@ -1,0 +1,29 @@
+#! /usr/bin/env zsh
+# rnotify - remote OS X notifications over SSH
+# Copyright (C) 2012 by Michael Clarke <clarkema at clarkema dot org>
+# Maintainer: Michael Clarke <clarkema at clarkema dot org>
+#
+# This file is part of rnotify.
+#
+# rnotify is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# rnotify is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with rnotify.  If not, see <http://www.gnu.org/licenses/>.
+
+zmodload zsh/net/tcp
+autoload -U tcp_shoot
+
+dotfile=$HOME/.rnotify
+port=$(awk -F ':[ \t]+' '/^port/ { print $2 }' $dotfile)
+pass=$(awk -F ':[ \t]+' '/^password/ { print $2 }' $dotfile)
+
+echo "$pass\t$1" | tcp_shoot localhost $port
+
