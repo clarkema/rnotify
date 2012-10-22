@@ -27,7 +27,9 @@ notifications from the server to be displayed in Notification Center.
 
         ssh server -R12345:localhost:12345
 
-5. Run `rnotify`
+5. To use `rnotify` for the current session, just run `rnotifyd`.
+   Alternatively, `rnotifyd --autorun` will automatically launch
+   `rnotifyd` on login so it's always available.
 
 ### On the server:
 
