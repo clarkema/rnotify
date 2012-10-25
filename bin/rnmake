@@ -1,0 +1,11 @@
+#! /bin/sh
+
+# Don't report invocations by zsh autocompletion
+report='true'
+if [[ "$*" == "-v -f" ]]; then report=''; fi
+
+if make "$@"; then
+    [ -n "$report" ] && whine "'make $*' completed"
+else
+    [ -n "$report" ] && whine "'make $*' failed"
+fi

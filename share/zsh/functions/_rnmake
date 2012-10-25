@@ -1,0 +1,2 @@
+#compdef rnmake
+_make "$@"
