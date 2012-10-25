@@ -39,7 +39,13 @@ class OptionParser
       end
     end
 
-    optparse.parse!
+    begin
+      optparse.parse!
+    rescue OptionParser::InvalidOption => e
+      warn e
+      warn optparse
+      exit 1
+    end
   end
 end
 
