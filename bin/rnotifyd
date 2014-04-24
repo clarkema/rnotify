@@ -110,11 +110,13 @@ class NotifyConfig
       end
     end
 
-    unless config['port'] and config['notifier']
-      warn "Please configure at least your port and notifier utility"
+    unless config['port'] and config['password']
+      warn "Please configure at least your port and password"
       warn "in $HOME/.rnotify.  See the README for more."
       exit 1
     end
+
+    config['notifier'] ||= '/usr/local/bin/terminal-notifier'
 
     config
   end
