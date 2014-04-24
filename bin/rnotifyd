@@ -98,7 +98,7 @@ EOS
   end
 end
 
-class Config
+class NotifyConfig
   def self.read
     file = File.expand_path( "~/.rnotify" )
     config = {}
@@ -122,7 +122,7 @@ end
 
 def main
   options = OptionParser.parse(ARGV)
-  config  = Config.read
+  config  = NotifyConfig.read
   server  = TCPServer.new config['port']
 
   loop do
